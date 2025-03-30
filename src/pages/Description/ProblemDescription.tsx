@@ -1,12 +1,12 @@
 
-import { useState, DragEvent } from 'react';
+import { useState, DragEvent, useEffect } from 'react';
 import AceEditor from 'react-ace';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import "../../imports/AceBuildImports";
 import DOMPurify from 'dompurify';
-
+import {socket} from '../../socket'
 import Languages from '../../constants/Languages';
 import Themes from '../../constants/Themes';
 
@@ -20,9 +20,11 @@ type themeStyle = {
     value: string
 }
 
+
 function Description({ descriptionText }: {descriptionText: string}) {
 
-
+    const userId = "312"
+   
     const sanitizedMarkdown = DOMPurify.sanitize(descriptionText);
 
 
@@ -33,6 +35,7 @@ function Description({ descriptionText }: {descriptionText: string}) {
     const [language, setLanguage] = useState('javascript');
     const [code, setCode] = useState('');
     const [theme, setTheme] = useState('monokai');
+    const [output, setOutput] = useState('')
 
     async function handleSubmission() {
         try {
@@ -41,7 +44,7 @@ function Description({ descriptionText }: {descriptionText: string}) {
             const response = await axios.post("http://localhost:3001/api/v1/submissions", {
                 code,
                 language,
-                userId: "1",
+                userId: userId,
                 problemId: "67e7b59e7f89f6d4891c8208"
             });
             console.log(response);
@@ -71,7 +74,6 @@ function Description({ descriptionText }: {descriptionText: string}) {
         }
 
     }
-
     const isActiveTab = (tabName: string) => {
         if(activeTab === tabName) {
             return 'tab tab-active';
@@ -94,7 +96,20 @@ function Description({ descriptionText }: {descriptionText: string}) {
             return 'tab';
         }
     }
+    useEffect(()=>{
+        socket.on('connect',() => {
+            console.log('Connected to socket-server')
+        })
+        socket.emit('setUserId', userId)
+        socket.emit('getConnectionId', userId)
+        socket.on('submissionPayloadResponse', (data) => {
+            setOutput(JSON.stringify(data))
+        })
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server')
+        })
 
+    })
 
 
     return (
@@ -192,8 +207,12 @@ function Description({ descriptionText }: {descriptionText: string}) {
                             <a onClick={() => setTestCaseTab('input')} role="tab" className={isInputTabActive('input')}>Input</a>
                             <a onClick={() => setTestCaseTab('output')} role="tab" className={isOutputTabActive('output')}>Output</a>
                         </div>
+                            {
+                                (testCaseTab === 'input' ) ? 
+                                <textarea rows={4} cols={70} className='bg-neutral text-white rounded-md resize-none'/> : 
+                                <textarea rows={4} cols={70} className='bg-neutral text-white rounded-md resize-none' value={output} readOnly />
+                            }
                             
-                            {(testCaseTab === 'input' || testCaseTab === 'output') ? <textarea rows={4} cols={70} className='bg-neutral text-white rounded-md resize-none'/> : <div className='w-12 h-8'></div>}
                         </div>
                     </div>
                 
