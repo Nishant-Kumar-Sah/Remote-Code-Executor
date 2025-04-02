@@ -36,6 +36,7 @@ function Description({ descriptionText }: {descriptionText: string}) {
     const [code, setCode] = useState('');
     const [theme, setTheme] = useState('monokai');
     const [output, setOutput] = useState('')
+    const [submissionStatus, setsubmissionStatus] = useState('')
 
     async function handleSubmission() {
         try {
@@ -103,7 +104,9 @@ function Description({ descriptionText }: {descriptionText: string}) {
         socket.emit('setUserId', userId)
         socket.emit('getConnectionId', userId)
         socket.on('submissionPayloadResponse', (data) => {
-            setOutput(JSON.stringify(data))
+            setOutput(JSON.stringify(data.response.output))
+            setsubmissionStatus(JSON.stringify(data.response.status))
+            console.log(output)
         })
         socket.on('disconnect', () => {
             console.log('Disconnected from server')
@@ -210,7 +213,11 @@ function Description({ descriptionText }: {descriptionText: string}) {
                             {
                                 (testCaseTab === 'input' ) ? 
                                 <textarea rows={4} cols={70} className='bg-neutral text-white rounded-md resize-none'/> : 
-                                <textarea rows={4} cols={70} className='bg-neutral text-white rounded-md resize-none' value={output} readOnly />
+                                <textarea 
+                                    rows={4} cols={70} 
+                                    className='bg-neutral text-white rounded-md resize-none' 
+                                    value={`Output: ${output}\n Status: ${submissionStatus}`}
+                                    readOnly />
                             }
                             
                         </div>
