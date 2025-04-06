@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function Navbar() {
     return (
         <div className="navbar bg-base-100 border-b-2 h-[55px]">
@@ -7,8 +9,12 @@ function Navbar() {
                     <div role="button" className="btn btn-ghost btn-circle">
                         
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
-                        
+                
                     </div>
+                    <Link to="/problems/list" className="btn btn-ghost text-xl">Problems</Link>
+                    <Link to="/contest" className="btn btn-ghost text-xl">Contest</Link>
+                    <Link to="/discuss" className="btn btn-ghost text-xl">Discuss</Link>
+                    <Link to="/store" className="btn btn-ghost text-xl">Store</Link>                        
                 </label>
                 </div>
             </div>
