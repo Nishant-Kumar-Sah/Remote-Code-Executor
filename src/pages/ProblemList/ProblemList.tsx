@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import ProblemFilterHeader from "../../components/ProblemListFilter";
 import { fetchAllProblems } from "../../apis/problemApi";
+import { ToastContainer, toast } from 'react-toastify';
 
 
 interface Problem {
@@ -39,6 +40,7 @@ function ProblemList() {
                 setProblems(data);
             }catch(error){
                 console.error(`Error while fetching problems : ${error}`)
+                toast.error("Failed to fetch problem")
                 setError("Failed to load problems");
             }finally {
                 setLoading(false);
@@ -57,6 +59,8 @@ function ProblemList() {
     });
 
     return (
+        <>
+        <ToastContainer/>
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-4">Problems</h1>
 
@@ -69,12 +73,14 @@ function ProblemList() {
                 setDifficulty={setDifficulty}
                 status={status}
                 setStatus={setStatus}
-            />
+                />
 
             {loading ? (
                 <div className="text-center py-10">Loading problems...</div>
             ) : error ? (
-                <div className="text-center text-red-600 py-10">{error}</div>
+                <div className="text-center text-red-600 py-10">
+                    
+                </div>
             ) : (
                 <div className="overflow-x-auto">
                     <table className="table table-zebra w-full">
@@ -109,6 +115,7 @@ function ProblemList() {
                 </div>
             )}
         </div>
+            </>
     );
 }
 
