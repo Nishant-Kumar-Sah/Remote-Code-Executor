@@ -5,6 +5,8 @@ import SideBar from './components/SideBar';
 import SampleProblem1 from './constants/SampleProblem1';
 import ProblemDescription from './pages/Description/ProblemDescription';
 import ProblemList from './pages/ProblemList/ProblemList';
+import Login from './pages/Auth/Login';
+import Signup from './pages/Auth/Signup';
 
 function App() {
 
@@ -17,6 +19,8 @@ function App() {
       <Routes>
         <Route path='/problems/list' element={<ProblemList />} />
         <Route path='/problem' element={ <ProblemDescription descriptionText={markdownText} />} />
+        <Route path='/login' element={<Login/>} />
+        <Route path='/signup' element={<Signup/>} />
       </Routes>
     </div>
   );
